@@ -1,3 +1,6 @@
+### V1.1.0
+- Added interactive mode: if no arguments are passed, the program prompts the user for configuration.
+
 ### V1.0.2.1
 - added net10 with ahead of time compilation to project target frameworks
 

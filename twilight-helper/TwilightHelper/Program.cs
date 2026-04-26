@@ -9,76 +9,117 @@ namespace TwilightHelper {
         
         public static void Main(string[] args) {
             bool shouldWait = IsLaunchedFromManualShortcut();
-            if (args.Length == 0) {
-                ShowHelp(shouldWait);
-                return;
-            }
-
             string processName = "";
             ProcessPriorityClass priority = Program.DEFAULT_PRIORITY;
             int sleepSeconds = Program.DEFAULT_SLEEP_SECONDS;
 
-            for (int i = 0; i < args.Length; i++) {
-                string arg = args[i].ToLower();
-                switch (arg) {
-                    case "-name":
-                    case "-n":
-                        if (i + 1 < args.Length) {
-                            processName = args[++i];
-                            if (string.IsNullOrWhiteSpace(processName)) {
-                                ShowError("Invalid argument! Process name can not be empty or whitespace!", shouldWait);
-                                return;
-                            }
-                        } else {
-                            ShowError("Missing argument value for -name", shouldWait);
-                            return;
-                        }
+            if (args.Length == 0) {
+                // Interactive mode
+                Console.WriteLine("--- TwilightHelper Interactive Mode ---");
+                Console.WriteLine("Tip: Use the -help argument to learn about command-line options for automation.");
+
+                // 1. Process Name (Required)
+                while (string.IsNullOrWhiteSpace(processName)) {
+                    Console.Write("Enter process name: ");
+                    processName = Console.ReadLine()?.Trim();
+                    if (string.IsNullOrWhiteSpace(processName)) {
+                        Console.WriteLine("Error: Process name cannot be empty.");
+                    }
+                }
+
+                // 2. Sleep Timer (Optional, default provided)
+                while (true) {
+                    Console.Write($"Enter sleep timer in seconds ({DEFAULT_SLEEP_SECONDS}): ");
+                    string input = Console.ReadLine()?.Trim();
+                    if (string.IsNullOrEmpty(input)) {
+                        sleepSeconds = DEFAULT_SLEEP_SECONDS;
                         break;
-                    case "-priority":
-                    case "-p":
-                        if (i + 1 < args.Length) {
-                            string priorityStr = args[++i];
-                            if (!Enum.TryParse(priorityStr, true, out priority) || !Enum.IsDefined(typeof(ProcessPriorityClass), priority)) {
-                                ShowError($"Invalid argument! Priority = {priorityStr}... Could not parse priority name or value is not a valid priority.", shouldWait);
-                                return;
-                            }
-                        } else {
-                            ShowError("Missing argument value for -priority", shouldWait);
-                            return;
-                        }
+                    }
+                    if (int.TryParse(input, out int s) && s > 0) {
+                        sleepSeconds = s;
                         break;
-                    case "-sleep":
-                    case "-s":
-                        if (i + 1 < args.Length) {
-                            string sleepStr = args[++i];
-                            if (int.TryParse(sleepStr, out int s)) {
-                                if (s <= 0) {
-                                    ShowError($"Invalid argument! Sleep = {s}... Sleep interval must be greater than 0!", shouldWait);
+                    }
+                    Console.WriteLine("Error: Please enter a valid integer greater than 0.");
+                }
+
+                // 3. Priority (Optional, default provided)
+                while (true) {
+                    Console.Write($"Enter priority ({DEFAULT_PRIORITY}): ");
+                    string input = Console.ReadLine()?.Trim();
+                    if (string.IsNullOrEmpty(input)) {
+                        priority = DEFAULT_PRIORITY;
+                        break;
+                    }
+                    if (Enum.TryParse(input, true, out ProcessPriorityClass p) && Enum.IsDefined(typeof(ProcessPriorityClass), p)) {
+                        priority = p;
+                        break;
+                    }
+                    Console.WriteLine($"Error: Invalid priority. Valid values: {string.Join(", ", Enum.GetNames(typeof(ProcessPriorityClass)))}");
+                }
+                Console.WriteLine();
+            } else {
+                for (int i = 0; i < args.Length; i++) {
+                    string arg = args[i].ToLower();
+                    switch (arg) {
+                        case "-name":
+                        case "-n":
+                            if (i + 1 < args.Length) {
+                                processName = args[++i];
+                                if (string.IsNullOrWhiteSpace(processName)) {
+                                    ShowError("Invalid argument! Process name can not be empty or whitespace!", shouldWait);
                                     return;
                                 }
-                                sleepSeconds = s;
                             } else {
-                                ShowError($"Invalid argument! Sleep = {sleepStr}... Could not parse sleep interval as an integer.", shouldWait);
+                                ShowError("Missing argument value for -name", shouldWait);
                                 return;
                             }
-                        } else {
-                            ShowError("Missing argument value for -sleep", shouldWait);
+                            break;
+                        case "-priority":
+                        case "-p":
+                            if (i + 1 < args.Length) {
+                                string priorityStr = args[++i];
+                                if (!Enum.TryParse(priorityStr, true, out priority) || !Enum.IsDefined(typeof(ProcessPriorityClass), priority)) {
+                                    ShowError($"Invalid argument! Priority = {priorityStr}... Could not parse priority name or value is not a valid priority.", shouldWait);
+                                    return;
+                                }
+                            } else {
+                                ShowError("Missing argument value for -priority", shouldWait);
+                                return;
+                            }
+                            break;
+                        case "-sleep":
+                        case "-s":
+                            if (i + 1 < args.Length) {
+                                string sleepStr = args[++i];
+                                if (int.TryParse(sleepStr, out int s)) {
+                                    if (s <= 0) {
+                                        ShowError($"Invalid argument! Sleep = {s}... Sleep interval must be greater than 0!", shouldWait);
+                                        return;
+                                    }
+                                    sleepSeconds = s;
+                                } else {
+                                    ShowError($"Invalid argument! Sleep = {sleepStr}... Could not parse sleep interval as an integer.", shouldWait);
+                                    return;
+                                }
+                            } else {
+                                ShowError("Missing argument value for -sleep", shouldWait);
+                                return;
+                            }
+                            break;
+                        case "-help":
+                        case "-h":
+                            ShowHelp(shouldWait);
                             return;
-                        }
-                        break;
-                    case "-help":
-                    case "-h":
-                        ShowHelp(shouldWait);
-                        return;
-                    default:
-                        ShowError($"Unrecognized argument '{arg}'", shouldWait);
-                        return;
+                        default:
+                            ShowError($"Unrecognized argument '{arg}'", shouldWait);
+                            return;
+                    }
                 }
-            }
 
-            if (string.IsNullOrWhiteSpace(processName)) {
-                ShowError("Process name is required. Use -name or -n.", shouldWait);
-                return;
+                if (string.IsNullOrWhiteSpace(processName)) {
+                    ShowError("Process name is required. Use -name or -n.", shouldWait);
+                    return;
+                }
             }
 
             Console.WriteLine($"Monitoring process: {processName}");
