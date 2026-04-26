@@ -43,31 +43,37 @@ jobs:
       - name: Publish net45 (AnyCPU)
         run: dotnet publish ./twilight-helper/TwilightHelper/TwilightHelper.csproj --configuration Release --framework net45 --output ./publish/net45/TwilightHelper
       - name: Archive published net45 (AnyCPU)
-        run: Compress-Archive -Path "./publish/net45/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_net45.zip"
+        run: Compress-Archive -Path "./publish/net45/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_netFramework45.zip"
           
 # ---- Publish and archive - net462
       - name: Publish net462 (AnyCPU)
         run: dotnet publish ./twilight-helper/TwilightHelper/TwilightHelper.csproj --configuration Release --framework net462 --output ./publish/net462/TwilightHelper
       - name: Archive published net462 (AnyCPU)
-        run: Compress-Archive -Path "./publish/net462/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_net462.zip"
+        run: Compress-Archive -Path "./publish/net462/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_netFramework462.zip"
       
 # ---- Publish and archive - net472
       - name: Publish net472 (AnyCPU)
         run: dotnet publish ./twilight-helper/TwilightHelper/TwilightHelper.csproj --configuration Release --framework net472 --output ./publish/net472/TwilightHelper
       - name: Archive published net472 (AnyCPU)
-        run: Compress-Archive -Path "./publish/net472/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_net472.zip"
+        run: Compress-Archive -Path "./publish/net472/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_netFramework472.zip"
       
 # ---- Publish and archive - net48
       - name: Publish net48 (AnyCPU)
         run: dotnet publish ./twilight-helper/TwilightHelper/TwilightHelper.csproj --configuration Release --framework net48 --output ./publish/net48/TwilightHelper
       - name: Archive published net48 (AnyCPU)
-        run: Compress-Archive -Path "./publish/net48/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_net48.zip"
+        run: Compress-Archive -Path "./publish/net48/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_netFramework48.zip"
       
 # ---- Publish and archive - net481
       - name: Publish net481 (AnyCPU)
         run: dotnet publish ./twilight-helper/TwilightHelper/TwilightHelper.csproj --configuration Release --framework net481 --output ./publish/net481/TwilightHelper
       - name: Archive published net481 (AnyCPU)
-        run: Compress-Archive -Path "./publish/net481/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_net481.zip"
+        run: Compress-Archive -Path "./publish/net481/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_netFramework481.zip"
+        
+# ---- Publish and archive - net10.0 with ahead of time compilation
+      - name: Publish net10.0 (x64)
+        run: dotnet publish ./twilight-helper/TwilightHelper/TwilightHelper.csproj  -c Release -r win-x64 -f net10.0 --output ./publish/net10-aot/TwilightHelper
+      - name: Archive published net10.0 (x64)
+        run: Compress-Archive -Path "./publish/net10-aot/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_net10-aot.zip"
 
 # ---- Creating github Release
 

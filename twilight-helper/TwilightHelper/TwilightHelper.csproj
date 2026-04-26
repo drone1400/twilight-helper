@@ -1,10 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net48;net481;net472;net462;net45</TargetFrameworks>
-    <Version>1.0.2.0</Version>
+    <TargetFrameworks>net10.0;net48;net481;net472;net462;net45</TargetFrameworks>
+    <Version>1.0.2.1</Version>
     <RootNamespace>TwilightHelper</RootNamespace>
     <Configurations>Debug;Release</Configurations>
     <Platforms>win-x64;win-x86</Platforms>
+  </PropertyGroup>
+
+  <!-- Enable Native AOT for modern .NET targets -->
+  <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PublishAot>true</PublishAot>
   </PropertyGroup>
 </Project>
