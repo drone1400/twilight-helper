@@ -14,6 +14,8 @@ The program takes the following arguments:
 * `-sleep` or `-s` followed by `<Seconds>` - The sleep interval between checks in seconds (default: 10)
 * `-help` or  `-h` - Display this help message
 
+Note: If the application is launched directly (e.g., by double-clicking the .exe) rather than from an existing terminal, it will wait for a key press after displaying help or errors so you can read the output.
+
 ## Example Usage
 `TwilightHelper.exe -name dinodday -priority High -sleep 30` - this will monitor for the dinodday process and check every 30 seconds if the process needs to be set to High priority.
 `TwilightHelper.exe -name dinodday` - this will monitor for the dinodday process and check every 10 seconds if the process needs to be set to High priority. 

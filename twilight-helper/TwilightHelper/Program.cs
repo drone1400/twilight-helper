@@ -8,8 +8,9 @@ namespace TwilightHelper {
         const int DEFAULT_SLEEP_SECONDS = 10;
         
         public static void Main(string[] args) {
+            bool shouldWait = IsLaunchedFromManualShortcut();
             if (args.Length == 0) {
-                ShowHelp();
+                ShowHelp(shouldWait);
                 return;
             }
 
@@ -25,11 +26,11 @@ namespace TwilightHelper {
                         if (i + 1 < args.Length) {
                             processName = args[++i];
                             if (string.IsNullOrWhiteSpace(processName)) {
-                                ShowError("Invalid argument! Process name can not be empty or whitespace!");
+                                ShowError("Invalid argument! Process name can not be empty or whitespace!", shouldWait);
                                 return;
                             }
                         } else {
-                            ShowError("Missing argument value for -name");
+                            ShowError("Missing argument value for -name", shouldWait);
                             return;
                         }
                         break;
@@ -38,11 +39,11 @@ namespace TwilightHelper {
                         if (i + 1 < args.Length) {
                             string priorityStr = args[++i];
                             if (!Enum.TryParse(priorityStr, true, out priority) || !Enum.IsDefined(typeof(ProcessPriorityClass), priority)) {
-                                ShowError($"Invalid argument! Priority = {priorityStr}... Could not parse priority name or value is not a valid priority.");
+                                ShowError($"Invalid argument! Priority = {priorityStr}... Could not parse priority name or value is not a valid priority.", shouldWait);
                                 return;
                             }
                         } else {
-                            ShowError("Missing argument value for -priority");
+                            ShowError("Missing argument value for -priority", shouldWait);
                             return;
                         }
                         break;
@@ -52,31 +53,31 @@ namespace TwilightHelper {
                             string sleepStr = args[++i];
                             if (int.TryParse(sleepStr, out int s)) {
                                 if (s <= 0) {
-                                    ShowError($"Invalid argument! Sleep = {s}... Sleep interval must be greater than 0!");
+                                    ShowError($"Invalid argument! Sleep = {s}... Sleep interval must be greater than 0!", shouldWait);
                                     return;
                                 }
                                 sleepSeconds = s;
                             } else {
-                                ShowError($"Invalid argument! Sleep = {sleepStr}... Could not parse sleep interval as an integer.");
+                                ShowError($"Invalid argument! Sleep = {sleepStr}... Could not parse sleep interval as an integer.", shouldWait);
                                 return;
                             }
                         } else {
-                            ShowError("Missing argument value for -sleep");
+                            ShowError("Missing argument value for -sleep", shouldWait);
                             return;
                         }
                         break;
                     case "-help":
                     case "-h":
-                        ShowHelp();
+                        ShowHelp(shouldWait);
                         return;
                     default:
-                        ShowError($"Unrecognized argument '{arg}'");
+                        ShowError($"Unrecognized argument '{arg}'", shouldWait);
                         return;
                 }
             }
 
             if (string.IsNullOrWhiteSpace(processName)) {
-                ShowError("Process name is required. Use -name or -n.");
+                ShowError("Process name is required. Use -name or -n.", shouldWait);
                 return;
             }
 
@@ -90,15 +91,23 @@ namespace TwilightHelper {
             }
         }
 
-        private static void ShowError(string message) {
+        private static void ShowError(string message, bool waitAtEnd = false) {
             Console.WriteLine();
             Console.WriteLine("ERROR:");
             Console.WriteLine("    " + message);
             Console.WriteLine();
-            ShowHelp();
+            ShowHelp(waitAtEnd);
         }
 
-        private static void ShowHelp() {
+        private static bool IsLaunchedFromManualShortcut() {
+            try {
+                return Console.CursorLeft == 0 && Console.CursorTop == 0;
+            } catch {
+                return false;
+            }
+        }
+
+        private static void ShowHelp(bool waitAtEnd = false) {
             Console.WriteLine( "TwilightHelper Usage:");
             Console.WriteLine( "  -name, -n <ProcessName>");
             Console.WriteLine( "      The name of the process to monitor");
@@ -116,6 +125,12 @@ namespace TwilightHelper {
             Console.WriteLine( "Example:");
             Console.WriteLine( "  TwilightHelper.exe -name dinodday -priority High -sleep 10");
             Console.WriteLine( "  TwilightHelper.exe -name dinodday");
+
+            if (waitAtEnd) {
+                Console.WriteLine();
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey(true);
+            }
         }
 
         private static void SetProcessPriority(string processName, ProcessPriorityClass priority) {
