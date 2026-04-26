@@ -1,6 +1,8 @@
 # TwilightHelper
 A simple command line tool for automatically setting a process priority. Made it for a friend playing dino d day on an old computer.
 
+Check the [Changelog](changelog.md) for details on version history.
+
 # How to use
 The program takes the following arguments:
 * `-name` or `-n` followed by `<ProcessName>` - The name of the process to monitor
