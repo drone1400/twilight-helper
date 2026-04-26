@@ -1,29 +1,51 @@
 using System;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Windows.Forms;
 
 namespace TwilightHelper {
     internal class Program {
         
         const ProcessPriorityClass DEFAULT_PRIORITY = ProcessPriorityClass.High;
         const int DEFAULT_SLEEP_SECONDS = 10;
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool IsWindowVisible(IntPtr hWnd);
+
+        const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
+
+        private static NotifyIcon trayIcon;
+        private static bool isExiting = false;
         
         public static void Main(string[] args) {
             bool shouldWait = IsLaunchedFromManualShortcut();
             string processName = "";
             ProcessPriorityClass priority = Program.DEFAULT_PRIORITY;
             int sleepSeconds = Program.DEFAULT_SLEEP_SECONDS;
+            bool autohide = false;
 
             if (args.Length == 0) {
                 // Interactive mode
                 Console.WriteLine("--- TwilightHelper Interactive Mode ---");
                 Console.WriteLine("Tip: Use the -help argument to learn about command-line options for automation.");
 
-                // 1. Process Name (Required)
+                // 1. Process Name (Optional in interactive, default: dinodday)
                 while (string.IsNullOrWhiteSpace(processName)) {
-                    Console.Write("Enter process name: ");
+                    Console.Write("Enter process name (dinodday): ");
                     processName = Console.ReadLine()?.Trim();
-                    if (string.IsNullOrWhiteSpace(processName)) {
-                        Console.WriteLine("Error: Process name cannot be empty.");
+                    if (string.IsNullOrEmpty(processName)) {
+                        processName = "dinodday";
+                        break;
                     }
                 }
 
@@ -55,6 +77,21 @@ namespace TwilightHelper {
                         break;
                     }
                     Console.WriteLine($"Error: Invalid priority. Valid values: {string.Join(", ", Enum.GetNames(typeof(ProcessPriorityClass)))}");
+                }
+
+                // 4. Autohide (Optional, default: true)
+                while (true) {
+                    Console.Write("Autohide to tray? (y/n) [y]: ");
+                    string input = Console.ReadLine()?.Trim().ToLower();
+                    if (string.IsNullOrEmpty(input) || input == "y" || input == "yes") {
+                        autohide = true;
+                        break;
+                    }
+                    if (input == "n" || input == "no") {
+                        autohide = false;
+                        break;
+                    }
+                    Console.WriteLine("Error: Please enter 'y' or 'n'.");
                 }
                 Console.WriteLine();
             } else {
@@ -106,6 +143,10 @@ namespace TwilightHelper {
                                 return;
                             }
                             break;
+                        case "-autohide":
+                        case "-ah":
+                            autohide = true;
+                            break;
                         case "-help":
                         case "-h":
                             ShowHelp(shouldWait);
@@ -125,11 +166,68 @@ namespace TwilightHelper {
             Console.WriteLine($"Monitoring process: {processName}");
             Console.WriteLine($"Target priority: {priority}");
             Console.WriteLine($"Sleep interval: {sleepSeconds} seconds");
+            Console.WriteLine($"Autohide: {autohide}");
 
-            while (true) {
-                SetProcessPriority(processName, priority);
-                System.Threading.Thread.Sleep(sleepSeconds * 1000);
+            SetupTrayIcon(processName);
+            if (autohide) {
+                HideConsole();
             }
+
+            while (!isExiting) {
+                SetProcessPriority(processName, priority);
+                Thread.Sleep(sleepSeconds * 1000);
+            }
+
+            trayIcon.Dispose();
+        }
+
+        private static void HideConsole() {
+            var handle = GetConsoleWindow();
+            ShowWindow(handle, SW_HIDE);
+        }
+
+        private static void SetupTrayIcon(string processName) {
+            Thread trayThread = new Thread(() => {
+                Icon appIcon = SystemIcons.Application;
+                try {
+                    // Try to load from embedded resources
+                    var assembly = System.Reflection.Assembly.GetExecutingAssembly();
+                    string resourceName = "TwilightHelper.res.bbwulf.ico";
+                    using (var stream = assembly.GetManifestResourceStream(resourceName)) {
+                        if (stream != null) {
+                            appIcon = new Icon(stream);
+                        }
+                    }
+                } catch {
+                    // Fallback to default if icon loading fails
+                }
+
+                trayIcon = new NotifyIcon {
+                    Icon = appIcon,
+                    Text = $"TwilightHelper - Monitoring {processName}",
+                    Visible = true
+                };
+
+                var contextMenu = new ContextMenuStrip();
+                contextMenu.Items.Add("Toggle Window", null, (s, e) => {
+                    var handle = GetConsoleWindow();
+                    if (IsWindowVisible(handle)) {
+                        ShowWindow(handle, SW_HIDE);
+                    } else {
+                        ShowWindow(handle, SW_SHOW);
+                    }
+                });
+                contextMenu.Items.Add("Exit", null, (s, e) => {
+                    isExiting = true;
+                    Application.Exit();
+                });
+
+                trayIcon.ContextMenuStrip = contextMenu;
+                Application.Run();
+            });
+
+            trayThread.SetApartmentState(ApartmentState.STA);
+            trayThread.Start();
         }
 
         private static void ShowError(string message, bool waitAtEnd = false) {
@@ -160,6 +258,8 @@ namespace TwilightHelper {
             Console.WriteLine( "          might require elevated privileges");
             Console.WriteLine($"  -sleep, -s <Seconds>");
             Console.WriteLine($"      The sleep interval between checks in seconds (default: {Program.DEFAULT_SLEEP_SECONDS})");
+            Console.WriteLine( "  -autohide, -ah");
+            Console.WriteLine( "      Automatically hide the console window to the system tray on startup");
             Console.WriteLine( "  -help, -h");
             Console.WriteLine( "      Display this help message");
             Console.WriteLine();

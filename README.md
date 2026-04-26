@@ -1,6 +1,10 @@
 # TwilightHelper
 A simple command line tool for automatically setting a process priority. Made it for a friend playing dino d day on an old computer.
 
+## Version Info
+* **V1.x**: Simple console application version.
+* **V2.x**: System tray version with window minimizing and autohide features.
+
 Check the [Changelog](changelog.md) for details on version history.
 
 # How to use

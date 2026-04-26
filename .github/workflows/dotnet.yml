@@ -71,9 +71,9 @@ jobs:
         
 # ---- Publish and archive - net10.0 with ahead of time compilation
       - name: Publish net10.0 (x64)
-        run: dotnet publish ./twilight-helper/TwilightHelper/TwilightHelper.csproj  -c Release -r win-x64 -f net10.0 --output ./publish/net10-aot/TwilightHelper
+        run: dotnet publish ./twilight-helper/TwilightHelper/TwilightHelper.csproj  -c Release -r win-x64 -f net10.0-windows --output ./publish/net10/TwilightHelper
       - name: Archive published net10.0 (x64)
-        run: Compress-Archive -Path "./publish/net10-aot/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_net10-aot.zip"
+        run: Compress-Archive -Path "./publish/net10/*" -DestinationPath "./publish/TwilightHelper_V${{steps.get-version.outputs.version}}_net10.zip"
 
 # ---- Creating github Release
 

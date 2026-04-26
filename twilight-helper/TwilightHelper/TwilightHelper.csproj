@@ -1,15 +1,24 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net10.0;net48;net481;net472;net462;net45</TargetFrameworks>
-    <Version>1.1.0.0</Version>
+    <TargetFrameworks>net10.0-windows;net48;net481;net472;net462;net45</TargetFrameworks>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Version>2.0.0.0</Version>
+    <ApplicationIcon>res\bbwulf.ico</ApplicationIcon>
     <RootNamespace>TwilightHelper</RootNamespace>
     <Configurations>Debug;Release</Configurations>
     <Platforms>win-x64;win-x86</Platforms>
   </PropertyGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="res\bbwulf.ico" />
+  </ItemGroup>
+
   <!-- Enable Native AOT for modern .NET targets -->
+  <!-- Disabled because WinForms (Tray Icon) is not compatible with AOT trimming -->
+  <!--
   <PropertyGroup Condition="'$(TargetFramework)' == 'net10.0'">
     <PublishAot>true</PublishAot>
   </PropertyGroup>
+  -->
 </Project>
