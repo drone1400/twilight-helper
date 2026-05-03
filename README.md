@@ -2,8 +2,9 @@
 A simple command line tool for automatically setting a process priority. Made it for a friend playing dino d day on an old computer.
 
 ## Version Info
-* **V1.x**: Simple console application version.
-* **V2.x**: System tray version with window minimizing and autohide features.
+* **V2.x**: The current version - it features a system tray icon which can be used to toggle the main console window visibility. Can also auto-hide after launching.
+* **V1.x**: A simple console application version without a system tray icon. More lightweight. [Check out the V1 branch](https://github.com/drone1400/twilight-helper/tree/master-V1) for the source code for that version.
+
 
 Check the [Changelog](changelog.md) for details on version history.
 
