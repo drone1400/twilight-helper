@@ -1,9 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFrameworks>net10.0-windows;net48;net481;net472;net462;net45</TargetFrameworks>
-    <UseWindowsForms>true</UseWindowsForms>
-    <Version>1.2.0.0</Version>
+    <TargetFrameworks>net10.0;net48;net481;net472;net462;net45</TargetFrameworks>
+    <Version>1.2.0.1</Version>
     <ApplicationIcon>res\bbwulf.ico</ApplicationIcon>
     <RootNamespace>TwilightHelper</RootNamespace>
     <Configurations>Debug;Release</Configurations>

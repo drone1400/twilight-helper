@@ -41,7 +41,7 @@ namespace TwilightHelper {
             }
 
             // return hardcoded version value, remember to always sync this when updating the .csproj file!!!
-            return "1.2.0.0";
+            return "1.2.0.1";
         }
 
         private static void InitializeLogging(string processName) {

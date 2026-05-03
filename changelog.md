@@ -1,3 +1,7 @@
+### V1.2.0.1
+- fixed AOT publishing for net10
+- removed a forgotten and unused WinForms dependency in csproj after porting code over from V2.1
+
 ### V1.2.0.0
 - Embedded app icon ("bbwulf.ico") as an assembly resource.
 - Added default values for interactive mode: process name ("dinodday"), sleep timer (10s), priority (High), and autohide (true).
