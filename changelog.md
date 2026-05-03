@@ -1,4 +1,12 @@
-### V2.0.0
+### V2.1.0.0
+- Added per-day, per-process log files.
+- Added timestamped console/log output.
+- Included app version in console startup and logs (fallback value: 2.1.0.0)
+- Added graceful exit flow control for Ctrl+C, tray Exit, and console close/logoff/shutdown events.
+- Can now toggle console visibility via a single left-click on the tray icon.
+- Some internal code/project cleanup
+
+### V2.0.0.0
 - Note: Native AOT compilation is currently disabled for .NET 10 due to WinForms (Tray Icon) incompatibility.
 - Embedded system tray icon ("bbwulf.ico") as an assembly resource.
 - Updated system tray icon to use custom "bbwulf.ico" and set it as the application icon.
@@ -9,7 +17,7 @@
 - Added default values for interactive mode: process name ("dinodday"), sleep timer (10s), priority (High), and autohide (true).
 - Rebranded versioning to V2.0.0.0.
 
-### V1.1.0
+### V1.1.0.0
 - Added interactive mode: if no arguments are passed, the program prompts the user for configuration.
 
 ### V1.0.2.1

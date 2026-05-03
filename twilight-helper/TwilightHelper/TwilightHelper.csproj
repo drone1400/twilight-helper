@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFrameworks>net10.0-windows;net48;net481;net472;net462;net45</TargetFrameworks>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>2.0.0.0</Version>
+    <Version>2.1.0.0</Version>
     <ApplicationIcon>res\bbwulf.ico</ApplicationIcon>
     <RootNamespace>TwilightHelper</RootNamespace>
     <Configurations>Debug;Release</Configurations>
@@ -11,6 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="res\**\*" />
+    <Content Remove="res\**\*" />
     <EmbeddedResource Include="res\bbwulf.ico" />
   </ItemGroup>
 
