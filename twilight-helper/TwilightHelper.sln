@@ -2,6 +2,15 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwilightHelper", "TwilightHelper\TwilightHelper.csproj", "{4324B1E4-5EEA-4E72-BB2B-DB29768818FB}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B2A17DE5-DFAE-427F-AE6F-40C53AA57BA2}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = ..\.github\workflows\dotnet.yml
+		.gitignore = ..\.gitignore
+		CHANGELOG.md = ..\CHANGELOG.md
+		README.md = ..\README.md
+		release_notes.md = ..\release_notes.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

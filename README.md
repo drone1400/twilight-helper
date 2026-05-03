@@ -3,10 +3,12 @@ A simple command line tool for automatically setting a process priority. Made it
 
 Check the [Changelog](changelog.md) for details on version history.
 
+![appexample.png](appexample.png)
+
 # How to use
 Simply run the program, and you will be prompted to enter the process name, priority, and sleep interval in seconds. Alternatively, you can also use command line arguments to configure these.
 
-For the sleep and priority options, if you omit specifying any value, then the default values shown in parentheses will be used.
+For the process name, sleep and priority options, if you omit specifying any value, then the default values shown in parentheses will be used.
 
 Example:
 ```
